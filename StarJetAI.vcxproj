@@ -145,6 +145,7 @@
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameControl.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="Spaceship.h" />
     <ClInclude Include="SpaceshipFactory.h" />
   </ItemGroup>
