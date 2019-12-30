@@ -20,13 +20,32 @@ private:
 	int update_status = PREPARING;
 	int spaceships_count = 0;
 
-	bool test_collision(GameObject* first, GameObject* second) {
+	static bool test_x_collision(vector<int>* first_rect, vector<int>* second_rect) {
+		if (((*first_rect)[0] > (*second_rect)[0]) && ((*first_rect)[0] < ((*second_rect)[0] + (*second_rect)[1])))
+			return true;
+		else if ((((*first_rect)[0] + (*first_rect)[1]) > (*second_rect)[0]) && (((*first_rect)[0] + (*first_rect)[1]) < ((*second_rect)[0] + (*second_rect)[1])))
+			return true;
+		else
+			return false;
+	};
+
+	static bool test_y_collision(vector<int>* first_rect, vector<int>* second_rect) {
+		if (((*first_rect)[2] > (*second_rect)[2]) && ((*first_rect)[2] < ((*second_rect)[2] + (*second_rect)[3])))
+			return true;
+		else if ((((*first_rect)[2] + (*first_rect)[2]) > (*second_rect)[2]) && (((*first_rect)[2] + (*first_rect)[3]) < ((*second_rect)[2] + (*second_rect)[3])))
+			return true;
+		else
+			return false;
+	};
+
+	static bool test_collision(GameObject* first, GameObject* second) {
 		vector<int>* first_rect = first->get_obj_rect();
 		vector<int>* second_rect = second->get_obj_rect();
 
-		if (((*first_rect)[0] > (*second_rect)[0]) && ((*first_rect)[0] < ((*second_rect)[0] + (*second_rect)[1]))) {
-			if()
-		}
+		return ((GameControl::test_x_collision(first_rect, second_rect) ||
+			GameControl::test_x_collision(second_rect, first_rect)) &&
+			(GameControl::test_y_collision(first_rect, second_rect) ||
+				GameControl::test_y_collision(second_rect, first_rect)));
 	}
 
 public:
