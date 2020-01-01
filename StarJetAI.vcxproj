@@ -141,7 +141,11 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIController.h" />
+    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="AsteroidFactory.h" />
     <ClInclude Include="CONF.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameControl.h" />
     <ClInclude Include="GameObject.h" />

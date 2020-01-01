@@ -5,7 +5,7 @@
 #include "Logger.h"
 using namespace std;
 
-void intialize() {
+void pre_intialize() {
 	return;
 }
 
@@ -16,8 +16,8 @@ void game_cycle(const function<bool()>& game_update, const function<void()> & ga
 }
 
 int main() {
+	pre_intialize();
 	GameControl* gc = new GameControl();
-	intialize();
 
 	game_cycle([&gc]() mutable { return gc->update(); }, [&gc]() mutable { return gc->render(); });
 
