@@ -7,7 +7,7 @@
 
 class SpaceshipFactory: public Factory{
 public:
-	static Spaceship* get_object(int controller_type, double speed[2], int position[2], int id) {
+	static Spaceship* get_object(int controller_type, double speed[2], float position[2], int id) {
 		int size[2] = { SPACESHIP_WIDTH, SPACESHIP_HEIGHT };
 
 		Controller* spaceship_controller;

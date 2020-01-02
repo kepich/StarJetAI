@@ -1,14 +1,9 @@
 #pragma once
 
-enum MoveDirection{
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-};
+using namespace std;
 
 class Controller{
 public:
-	virtual int get_move() = 0;
+	virtual pair<double, double> get_move() = 0;
 };
 

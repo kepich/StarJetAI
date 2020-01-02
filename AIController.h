@@ -6,8 +6,8 @@ class AIController : public Controller{
 private:
 
 public:
-	int get_move() {
-
+	pair<double, double> get_move() {
+		return pair<int, int>(1, 1);
 	}
 };
 
