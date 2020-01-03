@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "AIController.h"
 class Asteroid : public GameObject{
 public:
 	Asteroid(double speed[2], float position[2], int size[2], int type, int id) : GameObject(speed, position, size, type, id) {
@@ -16,5 +17,7 @@ public:
 	void render() {
 		return;
 	}
+
+	friend class AIController;
 };
 

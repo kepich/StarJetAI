@@ -12,8 +12,10 @@ private:
 	}
 
 public:
-	Spaceship(Controller* controller, double speed[2], float position[2], int size[2], int type, int id): GameObject(speed, position, size, type, id){
+	Spaceship(Controller* controller, float speed[2], float position[2], int size[2], int type, int id): GameObject(speed, position, size, type, id){
 		this->controller = controller;
+		if (controller->get_type() == AI)
+			((AIController*)controller)->set_host_object(this);
 		return;
 	}
 
@@ -24,6 +26,8 @@ public:
 		this->position[1] += int(speed.second);
 		return true;
 	}
+
+	friend class AIController;
 
 	void render() {
 		return;

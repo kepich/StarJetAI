@@ -22,6 +22,8 @@ public:
 			break;
 		}
 
+		Spaceship* result = new Spaceship(spaceship_controller, speed, position, size, SPACESHIP, id);
+
 		return new Spaceship(spaceship_controller, speed, position, size, SPACESHIP, id);
 	}
 };

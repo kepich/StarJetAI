@@ -10,7 +10,7 @@ enum GAME_OBJECT_TYPE
 
 class GameObject{
 protected:
-	double	speed[2]		= { 0, 0 };
+	float	speed[2]		= { 0, 0 };
 	float	position[2]		= { 0, 0 };
 	int		size[2]			= { 0, 0 };
 	int		type			= EMPTY_OBJECT;
@@ -18,7 +18,7 @@ protected:
 	bool	is_deleted_flag	= false;
 
 public:
-	GameObject(double speed[2], float position[2], int size[2], int type, int id) {
+	GameObject(float speed[2], float position[2], int size[2], int type, int id) {
 		this->speed[0] = speed[0];			// Speed vector
 		this->speed[1] = speed[1];
 
