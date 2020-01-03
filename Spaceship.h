@@ -1,7 +1,6 @@
 #pragma once
 #include "GameObject.h"
 #include "Controller.h"
-#include "AIController.h"
 
 class Spaceship: public GameObject{
 private:

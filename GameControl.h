@@ -15,7 +15,7 @@ enum UpdateStatusEnum{
 class GameControl{
 private:
 	Logger* log = Logger::get_logger();
-	vector<GameObject*> objects = vector<GameObject*>();
+	vector<GameObject*>* objects = new vector<GameObject*>();
 
 	int update_status = PREPARING;
 	int spaceships_count = 0;
@@ -62,21 +62,21 @@ public:
 		this->update_status = UPDATING;
 		log->info("GameControl updating...");
 
-		for (GameObject* temp_object : this->objects)
+		for (GameObject* temp_object : *(this->objects))
 			temp_object->update();
 
 		// Deleting objects
 		GameObject* deleted_object;
-		for (auto temp_obj_iterator = this->objects.begin(); temp_obj_iterator < this->objects.end(); temp_obj_iterator++)
+		for (auto temp_obj_iterator = this->objects->begin(); temp_obj_iterator < this->objects->end(); temp_obj_iterator++)
 			if ((*temp_obj_iterator)->is_deleted()) {
 				deleted_object = *temp_obj_iterator;
-				this->objects.erase(temp_obj_iterator);
+				this->objects->erase(temp_obj_iterator);
 				delete deleted_object;
 			}
 
 		// Spaceships counting [Teporary] ****************
 		this->spaceships_count = 0;
-		for (GameObject* temp_object : this->objects)
+		for (GameObject* temp_object : *(this->objects))
 			if (temp_object->get_type() == SPACESHIP) this->spaceships_count++;
 
 		if (!this->spaceships_count) {
@@ -98,7 +98,7 @@ public:
 	}
 
 	void add_object(GameObject* new_object) {
-		this->objects.push_back(new_object);
+		this->objects->push_back(new_object);
 	}
 };
 
