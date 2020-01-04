@@ -15,6 +15,8 @@ constexpr auto SPACESHIP_WIDTH = 30;
 constexpr auto SPACESHIP_HEIGHT = 30;
 constexpr auto SPACESHIP_LINEAR_MAX_SPEED = 2;
 
+constexpr auto TRIGGER_LIMIT = 0.8;
+
 enum ControllerType{
 	AI,
 	PLAYER,
