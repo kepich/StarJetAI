@@ -1,12 +1,13 @@
 #pragma once
 #include "GameObject.h"
 #include "Controller.h"
+#include "AIController.h"
 
 class Spaceship: public GameObject{
 private:
 	Controller* controller;
 
-	void add_force(double x_axis, double y_axis) {
+	void add_force(float x_axis, float y_axis) {
 		this->speed[0] += x_axis;
 		this->speed[1] += y_axis;
 	}
@@ -26,8 +27,6 @@ public:
 		this->position[1] += int(speed.second);
 		return true;
 	}
-
-	friend class AIController;
 
 	void render() {
 		return;

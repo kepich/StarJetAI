@@ -2,9 +2,15 @@
 
 using namespace std;
 
+enum ControllerType {
+	AI,
+	PLAYER,
+	EMPTY
+};
+
 class Controller{
 private:
-	int controller_type = EMPTY;
+	int controller_type = ControllerType::EMPTY;
 public:
 	Controller(int controller_type) {
 		this->controller_type = controller_type;

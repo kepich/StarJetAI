@@ -4,6 +4,8 @@
 #include "Logger.h"
 #include "Spaceship.h"
 #include "SpaceshipFactory.h"
+#include "Asteroid.h"
+#include "AsteroidFactory.h"
 
 enum UpdateStatusEnum{
 	ALL_SHIPS_BROKEN,
@@ -20,7 +22,7 @@ private:
 	int update_status = PREPARING;
 	int spaceships_count = 0;
 
-	static bool test_x_collision(vector<int>* first_rect, vector<int>* second_rect) {
+	static bool test_x_collision(vector<float>* first_rect, vector<float>* second_rect) {
 		if (((*first_rect)[0] > (*second_rect)[0]) && ((*first_rect)[0] < ((*second_rect)[0] + (*second_rect)[1])))
 			return true;
 		else if ((((*first_rect)[0] + (*first_rect)[1]) > (*second_rect)[0]) && (((*first_rect)[0] + (*first_rect)[1]) < ((*second_rect)[0] + (*second_rect)[1])))
@@ -29,7 +31,7 @@ private:
 			return false;
 	};
 
-	static bool test_y_collision(vector<int>* first_rect, vector<int>* second_rect) {
+	static bool test_y_collision(vector<float>* first_rect, vector<float>* second_rect) {
 		if (((*first_rect)[2] > (*second_rect)[2]) && ((*first_rect)[2] < ((*second_rect)[2] + (*second_rect)[3])))
 			return true;
 		else if ((((*first_rect)[2] + (*first_rect)[2]) > (*second_rect)[2]) && (((*first_rect)[2] + (*first_rect)[3]) < ((*second_rect)[2] + (*second_rect)[3])))
@@ -39,8 +41,8 @@ private:
 	};
 
 	static bool test_collision(GameObject* first, GameObject* second) {
-		vector<int>* first_rect = first->get_obj_rect();
-		vector<int>* second_rect = second->get_obj_rect();
+		vector<float>* first_rect = first->get_obj_rect();
+		vector<float>* second_rect = second->get_obj_rect();
 
 		return ((GameControl::test_x_collision(first_rect, second_rect) ||
 			GameControl::test_x_collision(second_rect, first_rect)) &&
@@ -50,6 +52,21 @@ private:
 
 public:
 	GameControl() {
+		float* speed = new float[2];
+		speed[0] = DEFAULT_SPEED_X;
+		speed[1] = DEFAULT_SPEED_Y;
+
+		float* position = new float[2];
+		position[0] = DEFAULT_POSITION_X;
+		position[1] = DEFAULT_POSITION_Y;
+
+		this->add_object(SpaceshipFactory::get_object(AI, this->objects, speed, position, this->objects->size()));
+		this->add_object(AsteroidFactory::get_object(speed[0], speed[1], speed, position, this->objects->size()));
+
+
+		delete[] speed;
+		delete[] position;
+		
 		return;
 	}
 

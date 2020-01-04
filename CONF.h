@@ -17,8 +17,7 @@ constexpr auto SPACESHIP_LINEAR_MAX_SPEED = 2;
 
 constexpr auto TRIGGER_LIMIT = 0.8;
 
-enum ControllerType{
-	AI,
-	PLAYER,
-	EMPTY
-};
+constexpr auto DEFAULT_SPEED_X = 0.0f;
+constexpr auto DEFAULT_SPEED_Y = 0.0f;
+constexpr auto DEFAULT_POSITION_X = 0.0f;
+constexpr auto DEFAULT_POSITION_Y = 0.0f;

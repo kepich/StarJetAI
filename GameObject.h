@@ -36,10 +36,21 @@ public:
 		return this->is_deleted_flag;
 	}
 
-	vector<int>* get_obj_rect() {
-		vector<int> res;
-		res.push_back(this->position[0]), res.push_back(this->size[0]), res.push_back(this->position[1]), res.push_back(this->size[1]);
+	vector<float>* get_obj_rect() {
+		vector<float> res;
+		res.push_back(this->position[0]);
+		res.push_back(float(this->size[0]));
+		res.push_back(this->position[1]);
+		res.push_back(float(this->size[1]));
 		return &res;
+	}
+
+	float* get_speed() {
+		return this->speed;
+	}
+
+	float* get_position() {
+		return this->position;
 	}
 
 	int get_type() {
