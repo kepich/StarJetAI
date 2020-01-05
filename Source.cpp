@@ -10,9 +10,12 @@ void pre_intialize() {
 }
 
 void game_cycle(const function<bool()>& game_update, const function<void()> & game_render = nullptr) {
-	while (game_update())
-		if (RENDERING)
-			if (game_render) game_render();
+	while (game_update()) {
+		if (RENDERING) {
+			if (game_render)
+				game_render();
+		}
+	}
 }
 
 int main() {

@@ -3,6 +3,7 @@
 #include "CONF.h"
 #include "GameObject.h"
 #include "Asteroid.h"
+#include "utils.h"
 #include <iostream>
 #include <vector>
 #include <dvec.h>
@@ -37,7 +38,8 @@ private:
 	GameObject* host_object;
 
 	float activate(float res) {
-		return (1 / (1 + exp(-res)) > TRIGGER_LIMIT) ? 1.0f : 0.0f;
+		float ex = exp(-res);
+		return ((1 / (1 + ex)) > TRIGGER_LIMIT) ? 1.0f : 0.0f;
 	}
 
 public:
@@ -93,34 +95,34 @@ public:
 		float* buffer_accum2 = new float[INPUT_L_SIZE];
 		
 		// Умножение на INPUT_LAYER **************************************
-		for (int i = 0; i < INPUT_L_SIZE; i++) {					// SIMD умножение матрицы на вектор
-			_mm256_store_ps(buffer_accum1, _mm256_mul_ps(input_data, _mm256_load_ps(this->input_layer_0[i])));
-
-			for (int j = 1; j < INPUT_SIZE; j++)
-				buffer_accum1[0] += buffer_accum1[j];
-			buffer_accum2[i] = buffer_accum1[0];
-		}
+		for (int i = 0; i < INPUT_L_SIZE; i++)					// SIMD умножение матрицы на вектор
+			buffer_accum2[i] = _mm256_reduce_add_ps(_mm256_mul_ps(input_data, _mm256_load_ps(this->input_layer_0[i])));
 		delete[] buffer_accum1;
 
 		// Умножение на HIDDEN_LAYER_1 ***********************************
 		buffer_accum1 = new float[HIDDEN_1_SIZE];
-		__m512 inp_result = _mm512_load_ps(buffer_accum2);
+		__m256 lo = _mm256_load_ps(buffer_accum2), hi = _mm256_load_ps(&buffer_accum2[8]);
 		for (int i = 0; i < HIDDEN_1_SIZE; i++)
-			buffer_accum1[i] = _mm512_reduce_add_ps(_mm512_mul_ps(inp_result, _mm512_load_ps(this->hidden_layer_1[i])));
+			buffer_accum1[i] = _mm256_reduce_add_ps(_mm256_mul_ps(lo, _mm256_load_ps(this->hidden_layer_1[i])), 
+				_mm256_mul_ps(hi, _mm256_load_ps(&this->hidden_layer_1[i][8])));
 		delete[] buffer_accum2;
 
 		// Умножение на HIDDEN_LAYER_2 ***********************************
+		lo = _mm256_load_ps(buffer_accum1);
+		hi = _mm256_load_ps(&buffer_accum1[8]);
 		buffer_accum2 = new float[HIDDEN_2_SIZE];
-		inp_result = _mm512_load_ps(buffer_accum1);
 		for(int i = 0; i < HIDDEN_2_SIZE; i++)
-			buffer_accum2[i] = _mm512_reduce_add_ps(_mm512_mul_ps(inp_result, _mm512_load_ps(this->hidden_layer_2[i])));
+			buffer_accum2[i] = _mm256_reduce_add_ps(_mm256_mul_ps(lo, _mm256_load_ps(this->hidden_layer_2[i])),
+				_mm256_mul_ps(hi, _mm256_load_ps(&this->hidden_layer_2[i][8])));
 		delete[] buffer_accum1;
 
 		// Умножение на OUTPUT_LAYER *************************************
 		buffer_accum1 = new float[OUTPUT_SIZE];
-		inp_result = _mm512_load_ps(buffer_accum2);
+		lo = _mm256_load_ps(buffer_accum2);
+		hi = _mm256_load_ps(&buffer_accum2[8]);
 		for (int i = 0; i < OUTPUT_SIZE; i++)
-			buffer_accum1[i] = _mm512_reduce_add_ps(_mm512_mul_ps(inp_result, _mm512_load_ps(this->output_layer[i])));
+			buffer_accum1[i] = _mm256_reduce_add_ps(_mm256_mul_ps(lo, _mm256_load_ps(this->output_layer[i])),
+				_mm256_mul_ps(hi, _mm256_load_ps(&this->output_layer[i][8])));
 		delete[] buffer_accum2;
 
 		// В buffer_accum2 - резуьтат
