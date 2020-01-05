@@ -150,6 +150,7 @@
     <ClInclude Include="GameControl.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="SessionControl.h" />
     <ClInclude Include="Spaceship.h" />
     <ClInclude Include="SpaceshipFactory.h" />
     <ClInclude Include="utils.h" />
