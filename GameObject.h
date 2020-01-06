@@ -37,12 +37,12 @@ public:
 	}
 
 	vector<float>* get_obj_rect() {
-		vector<float> res;
-		res.push_back(this->position[0]);
-		res.push_back(float(this->size[0]));
-		res.push_back(this->position[1]);
-		res.push_back(float(this->size[1]));
-		return &res;
+		vector<float>* res = new vector<float>();
+		res->push_back(this->position[0]);
+		res->push_back(float(this->size[0]));
+		res->push_back(this->position[1]);
+		res->push_back(float(this->size[1]));
+		return res;
 	}
 
 	float* get_speed() {

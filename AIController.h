@@ -34,8 +34,8 @@ private:
 	float hidden_layer_2	[HIDDEN_2_SIZE][HIDDEN_1_SIZE];
 	float output_layer		[OUTPUT_SIZE][HIDDEN_2_SIZE];
 
-	vector<GameObject*>* game_objects;
-	GameObject* host_object;
+	vector<GameObject*>* game_objects = NULL;
+	GameObject* host_object = NULL;
 
 	float activate(float res) {
 		float ex = exp(-res);

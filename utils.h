@@ -1,6 +1,14 @@
 #pragma once
 #include <dvec.h>
 
+enum UpdateStatusEnum {
+	ALL_SHIPS_BROKEN,
+	TIME_OUT,
+	UPDATING,
+	PREPARING,
+	LEARNING_COMPLETE
+};
+
 float _mm256_reduce_add_ps(__m256 v1) {
 	__m128 vec4 = _mm_hadd_ps(_mm256_extractf128_ps(v1, 0), _mm256_extractf128_ps(v1, 1));
 	vec4 = _mm_hadd_ps(vec4, vec4);

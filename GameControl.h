@@ -7,30 +7,26 @@
 #include "Asteroid.h"
 #include "AsteroidFactory.h"
 #include "SessionControl.h"
-
-enum UpdateStatusEnum{
-	ALL_SHIPS_BROKEN,
-	TIME_OUT,
-	UPDATING,
-	PREPARING
-};
+#include "utils.h"
 
 class GameControl{
 private:
-	Logger* log = Logger::get_logger();
+	Logger* log = new Logger("GameControl.log");
 	vector<GameObject*>* objects;
 	SessionControl* session_control;
 
 	int update_status = PREPARING;
 	int spaceships_count = 0;
 
+	void game_session_complete() {
+		log->info("Learning complete! All asteroids are skipped!");
+		getchar();
+	}
+
 public:
 	GameControl() {
 		this->objects = new vector<GameObject*>();
 		this->session_control = new SessionControl(this->objects);
-		//***************************************************************************************************************
-		
-		//***************************************************************************************************************
 		return;
 	}
 
@@ -47,6 +43,12 @@ public:
 			temp_object->update();
 
 		this->update_status = this->session_control->update();
+
+		if (this->update_status == LEARNING_COMPLETE)
+			game_session_complete();
+		if (this->update_status == ALL_SHIPS_BROKEN)
+			this->session_control->evaluate();
+
 		return true;
 	}
 

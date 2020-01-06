@@ -1,29 +1,30 @@
 #pragma once
-#include <vector>
 #include "GameObject.h"
 #include "utils.h"
+#include "Logger.h"
+#include <queue>
+#include <vector>
 
 using namespace std;
 
 class SessionControl{
 private:
 	vector<GameObject*>* objects;
-	int spaceships_count;
+	int spaceships_count = 0;
+	int asteroids_count = 0;
+	int asteroid_fit_count = 0;
+	queue<GameObject*> asteroid_queue;
+	queue<GameObject*> deleted_spaceships_queue;
+
+	Logger* log;
 
 	void initialisation() {
-		float* speed = new float[2];
-		speed[0] = DEFAULT_SPEED_X;
-		speed[1] = DEFAULT_SPEED_Y;
+		
+		//  Create population of spaceships
+		//	Fill asteroids queue
 
-		float* position = new float[2];
-		position[0] = DEFAULT_POSITION_X;
-		position[1] = DEFAULT_POSITION_Y;
 
-		this->add_object(SpaceshipFactory::get_object(AI, this->objects, speed, position, this->objects->size()));
-		this->add_object(AsteroidFactory::get_object(speed[0], speed[1], speed, position, this->objects->size()));
-
-		delete[] speed;
-		delete[] position;
+		this->asteroid_fit_count = this->asteroid_queue.size();
 	}
 
 
@@ -31,10 +32,24 @@ private:
 		this->objects->push_back(new_object);
 	}
 
+	int add_asteroid_from_queue() {
+		if (!this->asteroid_queue.size())
+			return LEARNING_COMPLETE;
+		
+		this->objects->push_back(this->asteroid_queue.front());
+		this->asteroid_queue.pop();
+
+		return UPDATING;
+	}
+
 public:
 	SessionControl(vector<GameObject*>* objects) {
 		this->objects = objects;
-		spaceships_count = 0;
+		this->spaceships_count = 0;
+		this->asteroids_count = 0;
+		this->asteroid_fit_count = 0;
+
+		this->log = new Logger("SessionControl.log");
 	}
 
 	int update() {
@@ -43,25 +58,33 @@ public:
 		}
 
 		// Deleting objects
-		GameObject* deleted_object;
 		for (auto temp_obj_iterator = this->objects->begin(); temp_obj_iterator < this->objects->end(); temp_obj_iterator++)
 			if ((*temp_obj_iterator)->is_deleted()) {
-				deleted_object = *temp_obj_iterator;
+				this->deleted_spaceships_queue.push(*temp_obj_iterator);
 				this->objects->erase(temp_obj_iterator);
-				delete deleted_object;
 			}
 
-		// Spaceships counting [Teporary] ****************
+		// Objects counting ***************************
 		this->spaceships_count = 0;
+		this->asteroids_count = 0;
+
 		for (GameObject* temp_object : *(this->objects))
 			if (temp_object->get_type() == SPACESHIP) this->spaceships_count++;
+			else if (temp_object->get_type() == ASTEROID) this->asteroids_count++;
 
 
 		if (!this->spaceships_count)
 			return ALL_SHIPS_BROKEN;
+		if (!this->asteroids_count)
+			return this->add_asteroid_from_queue();
+
 
 		// ***********************************************
 		return UPDATING;
+	}
+
+	void evaluate() {
+
 	}
 };
 
