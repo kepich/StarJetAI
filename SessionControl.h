@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "utils.h"
 #include "Logger.h"
+#include "AsteroidFactory.h"
+#include <fstream>
 #include <queue>
 #include <vector>
 
@@ -10,10 +12,11 @@ using namespace std;
 class SessionControl{
 private:
 	vector<GameObject*>* objects;
-	int spaceships_count = 0;
-	int asteroids_count = 0;
-	int asteroid_fit_count = 0;
-	queue<GameObject*> asteroid_queue;
+	int number_of_spaceships_in_game = 0;
+	int number_of_asteroids_in_game = 0;
+	int number_of_passed_asteroids = 0;
+	int temp_asteroid = 0;
+	vector<GameObject*> asteroids;
 	queue<GameObject*> deleted_spaceships_queue;
 
 	Logger* log;
@@ -22,9 +25,27 @@ private:
 		
 		//  Create population of spaceships
 		//	Fill asteroids queue
+		ifstream asteroids_file("asteroids_info", ios::in);
 
+		if (asteroids_file.is_open()) {
+			asteroids_file >> this->number_of_passed_asteroids;
+			int t_width, t_height;
+			float t_speed[2], t_pos[2];
+			GameObject* t_obj;
 
-		this->asteroid_fit_count = this->asteroid_queue.size();
+			for (int i = 0; i < this->number_of_passed_asteroids; i++) {
+				asteroids_file >> t_width >> t_height >> t_speed[0] >> t_speed[1] >> t_pos[0] >> t_pos[1];
+				t_obj = AsteroidFactory::get_object(t_width, t_height, t_speed, t_pos, this->objects->size());
+				this->objects->push_back(t_obj);
+				this->asteroids.push_back(t_obj);
+			}
+
+			this->number_of_passed_asteroids = this->asteroids.size();
+		}
+		else {
+			log->error("Cannot open asteroids file");
+			exit(-1);
+		}
 	}
 
 
@@ -33,11 +54,10 @@ private:
 	}
 
 	int add_asteroid_from_queue() {
-		if (!this->asteroid_queue.size())
+		if (!this->asteroids.size())
 			return LEARNING_COMPLETE;
 		
-		this->objects->push_back(this->asteroid_queue.front());
-		this->asteroid_queue.pop();
+		this->objects->push_back(this->asteroids[this->temp_asteroid++]);
 
 		return UPDATING;
 	}
@@ -45,9 +65,9 @@ private:
 public:
 	SessionControl(vector<GameObject*>* objects) {
 		this->objects = objects;
-		this->spaceships_count = 0;
-		this->asteroids_count = 0;
-		this->asteroid_fit_count = 0;
+		this->number_of_spaceships_in_game = 0;
+		this->number_of_asteroids_in_game = 0;
+		this->number_of_passed_asteroids = 0;
 
 		this->log = new Logger("SessionControl.log");
 	}
@@ -65,17 +85,19 @@ public:
 			}
 
 		// Objects counting ***************************
-		this->spaceships_count = 0;
-		this->asteroids_count = 0;
+		this->number_of_spaceships_in_game = 0;
+		this->number_of_asteroids_in_game = 0;
 
 		for (GameObject* temp_object : *(this->objects))
-			if (temp_object->get_type() == SPACESHIP) this->spaceships_count++;
-			else if (temp_object->get_type() == ASTEROID) this->asteroids_count++;
+			if (temp_object->get_type() == SPACESHIP) this->number_of_spaceships_in_game++;
+			else if (temp_object->get_type() == ASTEROID) this->number_of_asteroids_in_game++;
 
 
-		if (!this->spaceships_count)
+		if (!this->number_of_spaceships_in_game) {
+			this->temp_asteroid = 0;
 			return ALL_SHIPS_BROKEN;
-		if (!this->asteroids_count)
+		}
+		if (!this->number_of_asteroids_in_game)
 			return this->add_asteroid_from_queue();
 
 
